@@ -10,6 +10,22 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import { z } from 'zod';
+
+const loginSchema = z.object({
+  email: z.string().trim().email('Please enter a valid email address'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+});
+
+const signupSchema = z.object({
+  fullName: z.string().trim().min(2, 'Name must be at least 2 characters').max(100, 'Name must be less than 100 characters'),
+  email: z.string().trim().email('Please enter a valid email address'),
+  password: z.string()
+    .min(8, 'Password must be at least 8 characters')
+    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+    .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+    .regex(/[0-9]/, 'Password must contain at least one number'),
+});
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -19,6 +35,8 @@ const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [loginData, setLoginData] = useState({ email: '', password: '' });
   const [signupData, setSignupData] = useState({ email: '', password: '', fullName: '' });
+  const [loginErrors, setLoginErrors] = useState<{ email?: string; password?: string }>({});
+  const [signupErrors, setSignupErrors] = useState<{ fullName?: string; email?: string; password?: string }>({});
 
   useEffect(() => {
     if (user) {
@@ -28,9 +46,21 @@ const Auth = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    setLoginErrors({});
     
-    const { error } = await signIn(loginData.email, loginData.password);
+    const result = loginSchema.safeParse(loginData);
+    if (!result.success) {
+      const errors: { email?: string; password?: string } = {};
+      result.error.errors.forEach((err) => {
+        if (err.path[0] === 'email') errors.email = err.message;
+        if (err.path[0] === 'password') errors.password = err.message;
+      });
+      setLoginErrors(errors);
+      return;
+    }
+    
+    setIsLoading(true);
+    const { error } = await signIn(result.data.email, result.data.password);
     
     if (error) {
       toast({
@@ -51,9 +81,22 @@ const Auth = () => {
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    setSignupErrors({});
     
-    const { error } = await signUp(signupData.email, signupData.password, signupData.fullName);
+    const result = signupSchema.safeParse(signupData);
+    if (!result.success) {
+      const errors: { fullName?: string; email?: string; password?: string } = {};
+      result.error.errors.forEach((err) => {
+        if (err.path[0] === 'fullName') errors.fullName = err.message;
+        if (err.path[0] === 'email') errors.email = err.message;
+        if (err.path[0] === 'password') errors.password = err.message;
+      });
+      setSignupErrors(errors);
+      return;
+    }
+    
+    setIsLoading(true);
+    const { error } = await signUp(result.data.email, result.data.password, result.data.fullName);
     
     if (error) {
       toast({
@@ -109,8 +152,9 @@ const Auth = () => {
                         placeholder="your@email.com"
                         value={loginData.email}
                         onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
-                        required
+                        className={loginErrors.email ? 'border-destructive' : ''}
                       />
+                      {loginErrors.email && <p className="text-sm text-destructive">{loginErrors.email}</p>}
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="login-password">Password</Label>
@@ -120,8 +164,9 @@ const Auth = () => {
                         placeholder="••••••••"
                         value={loginData.password}
                         onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
-                        required
+                        className={loginErrors.password ? 'border-destructive' : ''}
                       />
+                      {loginErrors.password && <p className="text-sm text-destructive">{loginErrors.password}</p>}
                     </div>
                     <Button type="submit" className="w-full" disabled={isLoading}>
                       {isLoading ? (
@@ -146,8 +191,9 @@ const Auth = () => {
                         placeholder="John Doe"
                         value={signupData.fullName}
                         onChange={(e) => setSignupData({ ...signupData, fullName: e.target.value })}
-                        required
+                        className={signupErrors.fullName ? 'border-destructive' : ''}
                       />
+                      {signupErrors.fullName && <p className="text-sm text-destructive">{signupErrors.fullName}</p>}
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="signup-email">Email</Label>
@@ -157,8 +203,9 @@ const Auth = () => {
                         placeholder="your@email.com"
                         value={signupData.email}
                         onChange={(e) => setSignupData({ ...signupData, email: e.target.value })}
-                        required
+                        className={signupErrors.email ? 'border-destructive' : ''}
                       />
+                      {signupErrors.email && <p className="text-sm text-destructive">{signupErrors.email}</p>}
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="signup-password">Password</Label>
@@ -168,9 +215,10 @@ const Auth = () => {
                         placeholder="••••••••"
                         value={signupData.password}
                         onChange={(e) => setSignupData({ ...signupData, password: e.target.value })}
-                        required
-                        minLength={6}
+                        className={signupErrors.password ? 'border-destructive' : ''}
                       />
+                      {signupErrors.password && <p className="text-sm text-destructive">{signupErrors.password}</p>}
+                      <p className="text-xs text-muted-foreground">Min 8 chars with uppercase, lowercase, and number</p>
                     </div>
                     <Button type="submit" className="w-full" disabled={isLoading}>
                       {isLoading ? (
