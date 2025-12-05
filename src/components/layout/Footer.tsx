@@ -38,10 +38,9 @@ const Footer = () => {
           <div>
             <h5 className="font-semibold mb-4">Support</h5>
             <div className="space-y-2 text-sm">
-              <p className="text-muted-foreground hover:text-foreground cursor-pointer transition">Contact Us</p>
-              <p className="text-muted-foreground hover:text-foreground cursor-pointer transition">Shipping Info</p>
-              <p className="text-muted-foreground hover:text-foreground cursor-pointer transition">Returns & Exchanges</p>
-              <p className="text-muted-foreground hover:text-foreground cursor-pointer transition">FAQ</p>
+              <Link to="/contact" className="block text-muted-foreground hover:text-foreground transition">Contact Us</Link>
+              <Link to="/shipping-policy" className="block text-muted-foreground hover:text-foreground transition">Shipping Policy</Link>
+              <Link to="/terms-and-conditions" className="block text-muted-foreground hover:text-foreground transition">Terms & Conditions</Link>
             </div>
           </div>
           <div>
@@ -62,8 +61,8 @@ const Footer = () => {
         <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
           <p>© {new Date().getFullYear()} Abu Hurayrah Essentials. All rights reserved.</p>
           <div className="flex gap-4">
-            <span className="hover:text-foreground cursor-pointer transition">Privacy Policy</span>
-            <span className="hover:text-foreground cursor-pointer transition">Terms of Service</span>
+            <Link to="/shipping-policy" className="hover:text-foreground transition">Shipping Policy</Link>
+            <Link to="/terms-and-conditions" className="hover:text-foreground transition">Terms & Conditions</Link>
           </div>
         </div>
       </div>
