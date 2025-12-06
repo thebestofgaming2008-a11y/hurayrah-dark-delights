@@ -40,6 +40,8 @@ const Footer = () => {
             <div className="space-y-2 text-sm">
               <Link to="/contact" className="block text-muted-foreground hover:text-foreground transition">Contact Us</Link>
               <Link to="/shipping-policy" className="block text-muted-foreground hover:text-foreground transition">Shipping Policy</Link>
+              <Link to="/cancellations-refunds" className="block text-muted-foreground hover:text-foreground transition">Cancellations & Refunds</Link>
+              <Link to="/privacy-policy" className="block text-muted-foreground hover:text-foreground transition">Privacy Policy</Link>
               <Link to="/terms-and-conditions" className="block text-muted-foreground hover:text-foreground transition">Terms & Conditions</Link>
             </div>
           </div>
@@ -60,9 +62,11 @@ const Footer = () => {
         </div>
         <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
           <p>© {new Date().getFullYear()} Abu Hurayrah Essentials. All rights reserved.</p>
-          <div className="flex gap-4">
-            <Link to="/shipping-policy" className="hover:text-foreground transition">Shipping Policy</Link>
-            <Link to="/terms-and-conditions" className="hover:text-foreground transition">Terms & Conditions</Link>
+          <div className="flex gap-4 flex-wrap justify-center">
+            <Link to="/shipping-policy" className="hover:text-foreground transition">Shipping</Link>
+            <Link to="/cancellations-refunds" className="hover:text-foreground transition">Refunds</Link>
+            <Link to="/privacy-policy" className="hover:text-foreground transition">Privacy</Link>
+            <Link to="/terms-and-conditions" className="hover:text-foreground transition">Terms</Link>
           </div>
         </div>
       </div>
