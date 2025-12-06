@@ -49,7 +49,13 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
+  html {
+    color-scheme: dark;
+  }
+
   body {
     @apply bg-background text-foreground;
+    background-color: hsl(220 30% 6%);
+    color: hsl(210 40% 98%);
   }
 }
